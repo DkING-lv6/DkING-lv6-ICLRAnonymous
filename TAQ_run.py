@@ -17,7 +17,7 @@ import numpy as np
 from torch_geometric.data import Data
 from tae import TAEAugmenter
 import torch_geometric as pyg
-from bitarray import bitarray
+# from bitarray import bitarray
 
 parser = argparse.ArgumentParser(description='')
 parser.add_argument('--dataset', type=str, default='reddit')
@@ -26,7 +26,7 @@ parser.add_argument('--weight_decay', type=float, default=0.0)
 parser.add_argument('--seed', type=int, default=0)
 parser.add_argument('--embedding_dim', type=int, default=300)
 parser.add_argument('--num_epoch', type=int,default='300')
-parser.add_argument('--use_pseudo_labels', action='store_true', help='Enable pseudo label generation using LUR/LCF')
+parser.add_argument('--use_pseudo_labels', action='store_true')
 parser.add_argument('--use_tae', action='store_true', help='Enable TAE augmentation')
 
 args = parser.parse_args()
@@ -44,8 +44,8 @@ torch.backends.cudnn.benchmark = False
 data_dict = load_mat(
     dataset=args.dataset,
     train_rate=0.3,
-    val_rate=0.5,
-    normal_rate=0.9
+    val_rate=0.1,
+    normal_rate=0.5
 )
 
 adj = data_dict['adj']
@@ -105,5 +105,5 @@ with torch.no_grad():
     test_auroc = roc_auc_score(ano_labels[idx_test], logits_test)
     test_auprc = average_precision_score(ano_labels[idx_test], logits_test, pos_label=1)
 
-print(f"Val AUROC: {val_auroc:.4f}, Val AUPRC: {val_auprc:.4f}")
+
 print(f"Test AUROC: {test_auroc:.4f}, Test AUPRC: {test_auprc:.4f}")
